@@ -42,7 +42,7 @@ export function csvToJson(csvContent: string, options: ConversionOptions = {}): 
   }
 
   // Converter linhas de dados para objetos
-  const jsonData: CSVRow[] = dataLines.map((line, index) => {
+  const jsonData: CSVRow[] = dataLines.map((line) => {
     const values = parseCSVLine(line, delimiter)
     const row: CSVRow = {}
 
