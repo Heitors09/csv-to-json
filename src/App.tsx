@@ -89,13 +89,13 @@ function App() {
         {/* Header */}
         <div className="space-y-6">
           <h1 className="text-5xl md:text-6xl font-light text-white leading-tight">
-            Convert <span className="font-semibold text-blue-400">CSV</span> to{' '}
+            Converta agora <span className="font-semibold text-blue-400">CSV</span> para{' '}
             <span className="font-semibold text-emerald-400">JSON</span>
           </h1>
           
           <p className="text-xl text-slate-300 leading-relaxed max-w-lg mx-auto">
-            Transform your data files quickly and effortlessly. 
-            Simple, fast, and reliable.
+            Transforme seus arquivos de dados de forma rápida e sem esforço.
+            Simples, rápido e confiável.
           </p>
         </div>
 
