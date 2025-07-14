@@ -11,97 +11,64 @@ export function FileUpload({ onFileSelect, onError }: FileUploadProps) {
   const [dragCounter, setDragCounter] = useState(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Recebe um prop file onde seu type é File que é uma API nativa do JS
   const validateCSVFile = (file: File): boolean => {
-    // cria um array que guarda as extensões validas para o arquivo
     const validExtensions = ['.csv', '.CSV']
-    //pega a ultima posição do ponto e usando substring pega tudo após o ponto 
     const fileExtension = file.name.substring(file.name.lastIndexOf('.'))
-    // verifica se no array validExtensios inclui o que vem depois do ponto em fileExtension
     if (!validExtensions.includes(fileExtension)) {
       return false
     }
-
-    // Verificar tipo MIME (opcional, mas útil), ou seja criados por sistemas, editores de texto, etc
     const validMimeTypes = [
       'text/csv',
       'application/csv',
       'text/plain',
       'application/vnd.ms-excel'
     ]
-    
-    //verifica se o CSV se encontra no array validMimeTypes
     if (!validMimeTypes.includes(file.type) && file.type !== '') {
       return false
     }
-    //se tudo estiver ok, retorna true
     return true
   }
 
-  // Ler e validar conteúdo CSV
   const validateCSVContent = async (file: File): Promise<boolean> => {
-    // cria uma promise para resolver o FileReader que é assincrono
     return new Promise((resolve) => {
-      // cria um reader usando a lib nativa do navegador JS que é FileReader
       const reader = new FileReader()
-      
-      //evento OnLoad é disparado quando o arquivo é carregado
       reader.onload = (e) => {
         try {
-          //pega o conteúdo do arquivo recebido
           const content = e.target?.result as string
-          
-          // Verificar se tem pelo menos uma linha
           if (!content || content.trim().length === 0) {
             resolve(false)
             return
           }
-
-          // Verificar se tem vírgulas (característica básica do CSV)
           const lines = content.split('\n')
           const firstLine = lines[0]
-          
           if (!firstLine.includes(',') && !firstLine.includes(';')) {
             resolve(false)
             return
           }
-
-          // Verificar se tem pelo menos 2 linhas (cabeçalho + dados)
           if (lines.length < 2) {
             resolve(false)
             return
           }
-
           resolve(true)
         } catch (error) {
           resolve(false)
         }
       }
-
-      //evento OnError é disparado quando o arquivo não é carregado
       reader.onerror = () => resolve(false)
-      //le o arquivo e converte para texto
       reader.readAsText(file)
     })
   }
 
-  // Processar arquivo selecionado
   const processFile = async (file: File) => {
     setIsLoading(true)
-    
     try {
-      // Validar extensão
       if (!validateCSVFile(file)) {
         throw new Error('Por favor, selecione um arquivo CSV válido (.csv)')
       }
-
-      // Validar conteúdo
       const isValidContent = await validateCSVContent(file)
       if (!isValidContent) {
         throw new Error('O arquivo não parece ser um CSV válido. Verifique se contém dados separados por vírgula.')
       }
-
-      // Arquivo válido
       onFileSelect(file)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro ao processar arquivo'
@@ -111,7 +78,6 @@ export function FileUpload({ onFileSelect, onError }: FileUploadProps) {
     }
   }
 
-  // Handlers para drag and drop
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -138,14 +104,12 @@ export function FileUpload({ onFileSelect, onError }: FileUploadProps) {
     e.stopPropagation()
     setIsDragOver(false)
     setDragCounter(0)
-
     const files = Array.from(e.dataTransfer.files)
     if (files.length > 0) {
       processFile(files[0])
     }
   }, [])
 
-  // Handler para input de arquivo
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files && files.length > 0) {
@@ -153,7 +117,6 @@ export function FileUpload({ onFileSelect, onError }: FileUploadProps) {
     }
   }
 
-  // Abrir seletor de arquivo
   const handleClick = () => {
     fileInputRef.current?.click()
   }
@@ -175,14 +138,11 @@ export function FileUpload({ onFileSelect, onError }: FileUploadProps) {
         onDrop={handleDrop}
         onClick={handleClick}
       >
-        {/* Loading overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-black/20 rounded-2xl flex items-center justify-center z-10">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
           </div>
         )}
-
-        {/* Upload icon */}
         <div className="text-center space-y-4">
           <div className={`
             w-16 h-16 mx-auto rounded-full flex items-center justify-center transition-all duration-200
@@ -201,7 +161,6 @@ export function FileUpload({ onFileSelect, onError }: FileUploadProps) {
               </svg>
             )}
           </div>
-
           <div className="space-y-2">
             <h3 className="text-xl font-medium text-white">
               {isDragOver ? 'Solte o arquivo aqui' : 'Arraste seu arquivo CSV aqui'}
@@ -214,8 +173,6 @@ export function FileUpload({ onFileSelect, onError }: FileUploadProps) {
             </p>
           </div>
         </div>
-
-        {/* Hidden file input */}
         <input
           ref={fileInputRef}
           type="file"

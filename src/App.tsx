@@ -1,7 +1,7 @@
 import './App.css'
 import { Button } from './components/ui/button'
-import { FileUpload } from './components/FileUpload'
-import { Notification } from './components/Notification'
+import { FileUpload } from './components/file-upload'
+import { Notification } from './components/notification'
 import { useState } from 'react'
 import { csvToJson, downloadJSON } from './utils/csvToJson'
 
@@ -48,25 +48,18 @@ function App() {
     setIsConverting(true)
     
     try {
-      // Ler o conteúdo do arquivo
       const content = await selectedFile.text()
-      
-      // Converter CSV para JSON
       const jsonData = csvToJson(content, {
         delimiter: ',',
         hasHeader: true,
         skipEmptyLines: true
       })
-
-      // Fazer download do arquivo JSON
       downloadJSON(jsonData, selectedFile.name)
-
       setNotification({
         message: `Conversão concluída! ${jsonData.length} registros convertidos.`,
         type: 'success',
         isVisible: true
       })
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro na conversão'
       setNotification({
@@ -86,27 +79,21 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
       <div className="max-w-2xl w-full text-center space-y-8">
-        {/* Header */}
         <div className="space-y-6">
           <h1 className="text-5xl md:text-6xl font-light text-white leading-tight">
             Converta agora <span className="font-semibold text-blue-400">CSV</span> para{' '}
             <span className="font-semibold text-emerald-400">JSON</span>
           </h1>
-          
           <p className="text-xl text-slate-300 leading-relaxed max-w-lg mx-auto">
             Transforme seus arquivos de dados de forma rápida e sem esforço.
             Simples, rápido e confiável.
           </p>
         </div>
-
-        {/* Upload Section */}
         <div className="space-y-6">
           <FileUpload 
             onFileSelect={handleFileSelect}
             onError={handleError}
           />
-
-          {/* File info */}
           {selectedFile && (
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
               <div className="flex items-center justify-between">
@@ -135,8 +122,6 @@ function App() {
               </div>
             </div>
           )}
-
-          {/* Convert button */}
           {selectedFile && (
             <Button 
               variant="default" 
@@ -156,8 +141,6 @@ function App() {
             </Button>
           )}
         </div>
-
-        {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
           <div className="text-center space-y-3">
             <div className="w-12 h-12 mx-auto bg-blue-500/20 rounded-lg flex items-center justify-center">
@@ -165,33 +148,29 @@ function App() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h4 className="font-medium text-white">Fast</h4>
-            <p className="text-sm text-slate-400">Lightning quick conversion</p>
+            <h4 className="font-medium text-white">Rápido</h4>
+            <p className="text-sm text-slate-400">Conversão instantânea</p>
           </div>
-          
           <div className="text-center space-y-3">
             <div className="w-12 h-12 mx-auto bg-emerald-500/20 rounded-lg flex items-center justify-center">
               <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h4 className="font-medium text-white">Secure</h4>
-            <p className="text-sm text-slate-400">Your data stays private</p>
+            <h4 className="font-medium text-white">Seguro</h4>
+            <p className="text-sm text-slate-400">Seus dados permanecem privados</p>
           </div>
-          
           <div className="text-center space-y-3">
             <div className="w-12 h-12 mx-auto bg-purple-500/20 rounded-lg flex items-center justify-center">
               <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </div>
-            <h4 className="font-medium text-white">Simple</h4>
-            <p className="text-sm text-slate-400">Easy to use interface</p>
+            <h4 className="font-medium text-white">Simples</h4>
+            <p className="text-sm text-slate-400">Interface fácil de usar</p>
           </div>
         </div>
       </div>
-
-      {/* Notification */}
       <Notification
         message={notification.message}
         type={notification.type}
